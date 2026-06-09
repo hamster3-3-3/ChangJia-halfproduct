@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>新豐廠｜半成品儀表板</title>
+  <title>長家廠｜半成品儀表板</title>
   <link rel="icon" href="data:," />
 
   <!-- Tailwind CSS (CDN) -->
@@ -390,13 +390,14 @@ function monthKeyFromISO(iso){
     <!-- Header -->
     <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">新豐廠｜半成品儀表板</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">長家廠｜半成品儀表板</h1>
       </div>
       <div class="flex flex-wrap gap-2 items-center justify-start sm:justify-end">
         <div class="flex flex-wrap gap-2 items-center mr-0 sm:mr-2" aria-label="廠別儀表板切換">
-          <a href="https://hamster3-3-3.github.io/Xifang-halfproduct/" class="seg-btn active no-underline" title="前往新豐廠半成品儀表板">新豐</a>
+          <a href="https://hamster3-3-3.github.io/Xifang-halfproduct/" class="seg-btn no-underline" title="前往新豐廠半成品儀表板">新豐</a>
           <a href="https://hamster3-3-3.github.io/jinxin-halfproduct/" class="seg-btn no-underline" title="前往晉欣半成品儀表板">晉欣</a>
           <a href="https://hamster3-3-3.github.io/Daxi-halfproduct/" class="seg-btn no-underline" title="前往屏榮大溪半成品儀表板">屏榮大溪</a>
+          <a href="https://hamster3-3-3.github.io/ChangJia-halfproduct/" class="seg-btn active no-underline" title="前往長家廠半成品儀表板">長家</a>
         </div>
         <span id="dataStatus" class="chip">尚未載入資料</span>
         <button id="reloadBtn" class="seg-btn">重新載入</button>
@@ -805,7 +806,7 @@ function monthKeyFromISO(iso){
 
 <script>
 /* =========================
-   新豐廠｜半成品儀表板
+   長家廠｜半成品儀表板
    - GitHub Pages 版：同網域讀取 ./data/*.xlsx
    - 需要 XLSX (SheetJS) 與 Chart.js
 ========================= */
@@ -1248,59 +1249,54 @@ async function loadManifest() {
   } catch (e) {
     // fallback list（需含子資料夾路徑）
     return [
-      "2025/07/114.07.01-31屏榮新豐半成品報廢管理表.xlsx",
-      "2025/08/114.08.01-31屏榮半成品報廢管理表(新豐廠).xlsx",
-      "2025/09/114.09.01-30屏榮半成品報廢管理表(新豐).xlsx",
-      "2025/10/114.10.01-31屏榮新豐半成品報廢管理表.xlsx",
-      "2025/10/【JFM指導】新豐廠生產管理報表0930-1006.xlsx",
-      "2025/10/【JFM指導】新豐廠生產管理報表10.xlsx",
-      "2025/10/【JFM指導】新豐廠生產管理報表1007-13.xlsx",
-      "2025/10/【JFM指導】新豐廠生產管理報表1014-20.xlsx",
-      "2025/10/【JFM指導】新豐廠生產管理報表1021-27.xlsx",
-      "2025/10/【JFM指導】新豐廠生產管理報表1028-1103.xlsx",
-      "2025/11/114.11.01-30屏榮新豐半成品報廢管理表.xlsx",
-      "2025/11/【JFM指導】新豐廠生產管理報表11.xlsx",
-      "2025/11/【JFM指導】新豐廠生產管理報表1104-10.xlsx",
-      "2025/11/【JFM指導】新豐廠生產管理報表1111-17.xlsx",
-      "2025/11/【JFM指導】新豐廠生產管理報表1118-24.xlsx",
-      "2025/11/【JFM指導】新豐廠生產管理報表1125-1201.xlsx",
-      "2025/12/114.12.01-31屏榮新豐半成品報廢管理表.xlsx",
-      "2025/12/【JFM指導】新豐廠生產管理報表12.xlsx",
-      "2025/12/【JFM指導】新豐廠生產管理報表1202-08.xlsx",
-      "2025/12/【JFM指導】新豐廠生產管理報表1209-15.xlsx",
-      "2025/12/【JFM指導】新豐廠生產管理報表1216-22.xlsx",
-      "2025/12/【JFM指導】新豐廠生產管理報表1223-29.xlsx",
-      "2026/01/115.01.01-31屏榮新豐半成品報廢管理表.xlsx",
-      "2026/01/【JFM指導】新豐廠生產管理報表01.xlsx",
-      "2026/01/【JFM指導】新豐廠生產管理報表0106-12.xlsx",
-      "2026/01/【JFM指導】新豐廠生產管理報表0113-19.xlsx",
-      "2026/01/【JFM指導】新豐廠生產管理報表0120-26.xlsx",
-      "2026/01/【JFM指導】新豐廠生產管理報表0127-0202.xlsx",
-      "2026/01/【JFM指導】新豐廠生產管理報表1230-0105.xlsx",
-      "2026/02/115.02.01-28屏榮新豐半成品報廢管理表.xlsx",
-      "2026/02/【JFM指導】新豐廠生產管理報表02.xlsx",
-      "2026/02/【JFM指導】新豐廠生產管理報表0203-09.xlsx",
-      "2026/02/【JFM指導】新豐廠生產管理報表0210-16.xlsx",
-      "2026/02/【JFM指導】新豐廠生產管理報表0217-23.xlsx",
-      "2026/02/【JFM指導】新豐廠生產管理報表0224-0302.xlsx",
-      "2026/03/115.03.01-31屏榮新豐半成品報廢管理表.xlsx",
-      "2026/03/【JFM指導】新豐廠生產管理報表03.xlsx",
-      "2026/03/【JFM指導】新豐廠生產管理報表0303-09.xlsx",
-      "2026/03/【JFM指導】新豐廠生產管理報表0310-16.xlsx",
-      "2026/03/【JFM指導】新豐廠生產管理報表0317-23.xlsx",
-      "2026/03/【JFM指導】新豐廠生產管理報表0324-30.xlsx",
-      "2026/04/115.04.01-30屏榮新豐半成品報廢管理表.xlsx",
-      "2026/04/【JFM指導】新豐廠生產管理報表0331-0406.xlsx",
-      "2026/04/【JFM指導】新豐廠生產管理報表04.xlsx",
-      "2026/04/【JFM指導】新豐廠生產管理報表0407-13.xlsx",
-      "2026/04/【JFM指導】新豐廠生產管理報表0414-20.xlsx",
-      "2026/04/【JFM指導】新豐廠生產管理報表0421-27.xlsx",
-      "2026/04/【JFM指導】新豐廠生產管理報表0428-0504.xlsx",
-      "2026/05/115.05.01-30屏榮新豐廠半成品生產管理日報.xlsx",
-      "2026/05/【JFM指導】新豐廠生產管理報表0428-0504.xlsx",
-      "2026/05/【JFM指導】新豐廠生產管理報表0505-11.xlsx",
-      "2026/05/【JFM指導】新豐廠生產管理報表0512-18.xlsx",
-      "2026/05/【JFM指導】新豐廠生產管理報表0519-25.xlsx"
+      "2025/09/【JFM指導】長家廠生產管理報表2025-09.xlsx",
+      "2025/10/【JFM指導】長家廠生產管理報表2025-10(W1).xlsx",
+      "2025/10/【JFM指導】長家廠生產管理報表2025-10(W2).xlsx",
+      "2025/10/【JFM指導】長家廠生產管理報表2025-10(W3).xlsx",
+      "2025/10/【JFM指導】長家廠生產管理報表2025-10(W4).xlsx",
+      "2025/10/【JFM指導】長家廠生產管理報表2025-10(W5).xlsx",
+      "2025/10/【JFM指導】長家廠生產管理報表2025-10月.xlsx",
+      "2025/10/長家廠半成品管理表(1001-1031).xlsx",
+      "2025/11/【JFM指導】長家廠生產管理報表2025-11(W1).xlsx",
+      "2025/11/【JFM指導】長家廠生產管理報表2025-11(W2).xlsx",
+      "2025/11/【JFM指導】長家廠生產管理報表2025-11(W3).xlsx",
+      "2025/11/【JFM指導】長家廠生產管理報表2025-11(W4).xlsx",
+      "2025/11/【JFM指導】長家廠生產管理報表2025-11.xlsx",
+      "2025/11/長家廠半成品管理表(1101-1108).xlsx",
+      "2025/12/【JFM指導】長家廠生產管理報表2025-12(W1).xlsx",
+      "2025/12/【JFM指導】長家廠生產管理報表2025-12(W2).xlsx",
+      "2025/12/【JFM指導】長家廠生產管理報表2025-12(W3).xlsx",
+      "2025/12/【JFM指導】長家廠生產管理報表2025-12(W4).xlsx",
+      "2025/12/【JFM指導】長家廠生產管理報表2025-12(W5).xlsx",
+      "2025/12/【JFM指導】長家廠生產管理報表2025-12.xlsx",
+      "2025/12/長家廠半成品管理表(1201-1231).xlsx",
+      "2026/01/【JFM指導】長家廠生產管理報表2026-1(W1).xlsx",
+      "2026/01/【JFM指導】長家廠生產管理報表2026-1(W2).xlsx",
+      "2026/01/【JFM指導】長家廠生產管理報表2026-1(W3).xlsx",
+      "2026/01/【JFM指導】長家廠生產管理報表2026-1(W4).xlsx",
+      "2026/01/【JFM指導】長家廠生產管理報表2026-1.xlsx",
+      "2026/01/長家廠半成品管理表(0101-0131).xlsx",
+      "2026/02/【JFM指導】長家廠生產管理報表2026-2(W2).xlsx",
+      "2026/02/【JFM指導】長家廠生產管理報表2026-2(W3).xlsx",
+      "2026/02/【JFM指導】長家廠生產管理報表2026-2(W4).xlsx",
+      "2026/02/【JFM指導】長家廠生產管理報表2026-2.xlsx",
+      "2026/02/長家廠半成品管理表(0201-0228).xlsx",
+      "2026/03/【JFM指導】長家廠生產管理報表2026-3(W1).xlsx",
+      "2026/03/【JFM指導】長家廠生產管理報表2026-3(W2).xlsx",
+      "2026/03/【JFM指導】長家廠生產管理報表2026-3(W3).xlsx",
+      "2026/03/【JFM指導】長家廠生產管理報表2026-3(W4).xlsx",
+      "2026/03/【JFM指導】長家廠生產管理報表2026-3.xlsx",
+      "2026/03/長家廠半成品管理表(0301-0331).xlsx",
+      "2026/04/【JFM指導】長家廠生產管理報表2026-4(W1).xlsx",
+      "2026/04/【JFM指導】長家廠生產管理報表2026-4(W2).xlsx",
+      "2026/04/【JFM指導】長家廠生產管理報表2026-4(W3).xlsx",
+      "2026/04/【JFM指導】長家廠生產管理報表2026-4(W4).xlsx",
+      "2026/04/【JFM指導】長家廠生產管理報表2026-4(W5).xlsx",
+      "2026/04/【JFM指導】長家廠生產管理報表2026-4.xlsx",
+      "2026/04/長家廠半成品管理表(0401-0430).xlsx",
+      "2026/05/【JFM指導】長家廠生產管理報表2026-5(W1).xlsx",
+      "2026/05/【JFM指導】長家廠生產管理報表2026-5(W2).xlsx",
+      "2026/05/半成品生產管理日報(0501-0531).xlsx"
     ];
   }
   return [];
@@ -1316,8 +1312,8 @@ function isJfmFile(p){
 }
 function isWasteFile(p){
   const n = baseName(p);
-  // 支援新豐 / 大溪 / 晉欣等半成品資料檔名，只要是半成品報廢管理表或半成品生產管理日報即納入。
-  return /(半成品報廢管理表|半成品生產管理日報).*\.xlsx$/i.test(n);
+  // 支援新豐 / 大溪 / 晉欣 / 長家等半成品資料檔名，只要是半成品報廢管理表、半成品生產管理日報或半成品管理表即納入。
+  return /(半成品報廢管理表|半成品生產管理日報|半成品管理表).*\.xlsx$/i.test(n);
 }
 
 function toMMDD(d){
@@ -1336,7 +1332,9 @@ function weekKeyFromISO(startISO, endISO){
 function matchWasteFileSpan(fileName){
   const s = String(fileName || '');
   return s.match(/(20\d{2})-(\d{2})(\d{2})-(\d{2})(\d{2})/i)
-      || s.match(/(20\d{2})(\d{2})(\d{2})-(\d{2})(\d{2})/i);
+      || s.match(/(20\d{2})(\d{2})(\d{2})-(\d{2})(\d{2})/i)
+      || s.match(/^(20\d{2})\/(?:0[1-9]|1[0-2])\/.*?(\d{2})(\d{2})-(\d{2})(\d{2})/i)
+      || s.match(/^(20\d{2})\/(?:0[1-9]|1[0-2])\/.*?\((\d{2})(\d{2})-(\d{2})(\d{2})\)/i);
 }
 
 
@@ -1400,12 +1398,46 @@ function buildJfmIndex(files){
     weeks.push({path: fp, year: sy, rangeKey, startISO, endISO});
   };
 
+  const pushWeekByMonthIndex = (fp, year, month, weekNo) => {
+    year = Number(year); month = Number(month); weekNo = Number(weekNo);
+    if (!year || !month || !weekNo) return;
+    const first = new Date(year, month - 1, 1);
+    const last = new Date(year, month, 0);
+    const firstTue = weekStartTue(first);
+    const ranges = [];
+    let cur = new Date(firstTue.getTime());
+    while (cur <= last){
+      const s = new Date(cur.getTime());
+      const e = new Date(cur.getTime());
+      e.setDate(e.getDate() + 6);
+      if (!(e < first || s > last)) ranges.push({s, e});
+      cur.setDate(cur.getDate() + 7);
+    }
+    const item = ranges[weekNo - 1];
+    if (!item) return;
+    const a = String(item.s.getMonth()+1).padStart(2,'0') + String(item.s.getDate()).padStart(2,'0');
+    const b = String(item.e.getMonth()+1).padStart(2,'0') + String(item.e.getDate()).padStart(2,'0');
+    const sy = item.s.getFullYear();
+    const rangeKey = `${a}-${b}`;
+    const startISO = toISO(item.s);
+    const endISO = toISO(item.e);
+    weekMap.set(`${sy}|${rangeKey}`, fp);
+    weeks.push({path: fp, year: sy, rangeKey, startISO, endISO});
+  };
+
   for (const fp of (files||[])){
     const n = baseName(fp);
     const fym = folderYM(fp);
 
+    // 週檔：2025-10(W1) / 2026-1(W2)（W 以該月所有週二～週一區間排序）
+    let m = n.match(/生產管理報表(20\d{2})[-_.年]?(\d{1,2})\s*\(W(\d+)\)\.xlsx/i);
+    if (m){
+      pushWeekByMonthIndex(fp, Number(m[1]), Number(m[2]), Number(m[3]));
+      continue;
+    }
+
     // 週檔：2025.1118-1124 / 20251118-1124 / 1118-24 / 1118-1124
-    let m = n.match(/生產管理報表(20\d{2})\.(\d{4})-(\d{4})\.xlsx/i)
+    m = n.match(/生產管理報表(20\d{2})\.(\d{4})-(\d{4})\.xlsx/i)
          || n.match(/生產管理報表(20\d{2})(\d{4})-(\d{4})\.xlsx/i);
     if (m){
       pushWeek(fp, Number(m[1]), m[2], m[3], null);
@@ -1418,7 +1450,13 @@ function buildJfmIndex(files){
       continue;
     }
 
-    // 月檔：2025.11 / 202511 / 11 / 01
+    // 月檔：2025-10月 / 2026-1 / 2025.11 / 202511 / 11 / 01
+    m = n.match(/生產管理報表(20\d{2})[-_.年]?(\d{1,2})月?\.xlsx/i);
+    if (m){
+      pushMonth(fp, `${m[1]}-${String(Number(m[2])).padStart(2,'0')}`);
+      continue;
+    }
+
     m = n.match(/生產管理報表(20\d{2})\.(\d{2})\.xlsx/i)
      || n.match(/生產管理報表(20\d{2})(\d{2})\.xlsx/i);
     if (m){
@@ -1795,7 +1833,7 @@ function parseTop20FromWB(wb, fileName){
     return null;
   }
 
-  // 新豐 JFM 前20大表的週別指定以 B:C 欄位為準。
+  // 長家 JFM 前20大表的週別指定以 B:C 欄位為準。
   // B:C 可能是合併儲存格（B 顯示 0519-0525、C 空白），也可能是 B=0519 / C=0525。
   function top20MMDDFromCell(v, baseMonth=null){
     if (v == null || v === '') return null;
@@ -1856,7 +1894,7 @@ function parseTop20FromWB(wb, fileName){
     const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
     if (!rows || !rows.length) continue;
 
-    // 新豐 JFM 的「報廢/超用20大－原因別分析」是一張累積表，B欄月別會以 0512-0518 這種格式切分週別。
+    // 長家 JFM 的「報廢/超用20大－原因別分析」是一張累積表，B欄月別會以 0512-0518 這種格式切分週別。
     // 因此不能把整張表都視為檔名代表的單週；必須逐列 carry-forward B欄區間。
     const headerRows = Math.min(8, rows.length);
     const maxC = Math.max(...rows.slice(0, headerRows).map(r => (r || []).length), 0);
@@ -1895,7 +1933,7 @@ function parseTop20FromWB(wb, fileName){
       return best;
     };
 
-    // B:C 為新豐 JFM 前20大表的週別指定欄，優先以固定欄位讀取；findCol 只作備援。
+    // B:C 為長家 JFM 前20大表的週別指定欄，優先以固定欄位讀取；findCol 只作備援。
     const cMonth    = findCol(['月別']);
     const cRangeStart = 1; // B欄：週別或起始日
     const cRangeEnd   = 2; // C欄：結束日（若B:C合併則通常為空白）
@@ -2834,7 +2872,7 @@ function parseReasonFromWB(wb, fileName){
 
     // C. 檔名或路徑內月別：生產管理報表2026.05、2026/05/...
     if (!monthKey){
-      m = fileText.match(/生產管理報表(20\d{2})\.(\d{1,2})(?!\d)/)
+      m = fileText.match(/生產管理報表(20\d{2})[-_.年]?(\d{1,2})月?(?!\d)/)
        || fileText.match(/(20\d{2})\/(\d{1,2})\//)
        || fileText.match(/(20\d{2})[.\-_/](\d{1,2})(?!\d)/);
       if (m){
@@ -3412,6 +3450,11 @@ function buildSelectors() {
       if (!isWasteFile(fp)) continue;
       const w = parseWasteWeekFromName(fp);
       if (!w || !w.start || !w.end) continue;
+      const ws0 = parseISO(w.start);
+      const we0 = parseISO(w.end);
+      const spanDays = (ws0 instanceof Date && !isNaN(ws0) && we0 instanceof Date && !isNaN(we0)) ? Math.round((we0 - ws0) / 86400000) + 1 : 0;
+      // 半成品月檔如 (1001-1031) 僅用來判定月份與資料範圍，不放進週別下拉。
+      if (spanDays > 14) continue;
       if (!wkMap.has(w.start)) wkMap.set(w.start, { start: w.start, end: w.end });
     }
   }
