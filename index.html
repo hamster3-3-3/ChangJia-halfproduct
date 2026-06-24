@@ -3049,6 +3049,24 @@ function monthKeyFromDateObj(d){
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 }
 
+
+function currentMonthKeyForData(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+
+function isAllowedDataMonthKey(mk){
+  const s = String(mk || '');
+  if (!/^20\d{2}-(0[1-9]|1[0-2])$/.test(s)) return false;
+  // 避免 manifest 中若有未來年份/預建資料夾時，被誤判為最新資料。
+  // 只允許讀到使用者裝置目前月份以前的資料。
+  return s <= currentMonthKeyForData();
+}
+
+function filterAllowedMonthKeys(keys){
+  return Array.from(new Set((keys || []).filter(isAllowedDataMonthKey))).sort();
+}
+
 function monthKeysBetween(startISO, endISO){
   const s = parseISO(startISO);
   const e = parseISO(endISO);
@@ -3204,7 +3222,7 @@ function getRecentMonthKeysFromManifest(count=3){
   const keys = new Set();
   for (const fp of (state.manifestFiles || [])) {
     for (const mk of getFileMonthCoverage(fp)) {
-      if (/^20\d{2}-(0[1-9]|1[0-2])$/.test(String(mk || ''))) keys.add(mk);
+      if (isAllowedDataMonthKey(mk)) keys.add(mk);
     }
   }
   const sorted = Array.from(keys).sort();
@@ -3358,7 +3376,14 @@ async function loadAllData() {
   state.loadedMonthKeys = new Set();
   state.monthLoadPromises = new Map();
 
-  const intervals = state.manifestIntervals || [];
+  const allIntervals = state.manifestIntervals || [];
+  // 若 manifest 已經先放了未來年份的資料夾或空檔，不能把未來月份當成預設最新月份。
+  // 這裡只用目前月份以前的 interval 決定 dateMin/dateMax；若完全沒有符合才退回原本邏輯。
+  const allowedIntervals = allIntervals.filter(x => {
+    const months = Array.isArray(x.months) && x.months.length ? x.months : getFileMonthCoverage(x.path);
+    return months.some(isAllowedDataMonthKey);
+  });
+  const intervals = allowedIntervals.length ? allowedIntervals : allIntervals;
   if (intervals.length) {
     const starts = intervals.map(x => x.start).filter(Boolean).sort();
     const ends = intervals.map(x => x.end).filter(Boolean).sort();
@@ -3367,7 +3392,7 @@ async function loadAllData() {
   }
   if (!state.dateMin || !state.dateMax) {
     // fallback from file folder months
-    const monthKeys = Array.from(new Set(files.map(getFileMonthCoverage).flat().filter(Boolean))).sort();
+    const monthKeys = filterAllowedMonthKeys(files.map(getFileMonthCoverage).flat());
     if (!monthKeys.length) throw new Error('manifest 無可用月份');
     state.dateMin = `${monthKeys[0]}-01`;
     const last = monthKeys[monthKeys.length-1];
@@ -3379,7 +3404,7 @@ async function loadAllData() {
 }
 
 function buildSelectors() {
-  const yearSet = new Set(state.summary.map(r => r.date.slice(0,4)));
+  const yearSet = new Set(state.summary.map(r => r.date.slice(0,7)).filter(isAllowedDataMonthKey).map(mk => mk.slice(0,4)));
   if (state.jfmIndex) {
     for (const w of (state.jfmIndex.weeks || [])) {
       if (w && w.startISO) yearSet.add(String(w.startISO).slice(0,4));
@@ -3412,6 +3437,7 @@ function buildSelectors() {
     const y = parts[0];
     const mm = String(parts[1]).padStart(2, '0');
     if (!/^20\d{2}$/.test(y) || !/^(0[1-9]|1[0-2])$/.test(mm)) return;
+    if (!isAllowedDataMonthKey(`${y}-${mm}`)) return;
     if (!monthsByYear.has(y)) monthsByYear.set(y, new Set());
     monthsByYear.get(y).add(mm);
   };
