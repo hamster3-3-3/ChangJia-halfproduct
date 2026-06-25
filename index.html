@@ -1845,8 +1845,6 @@ function parseTop20FromWB(wb, fileName){
     return null;
   }
 
-  // 長家 JFM 前20大表的週別指定以 B:C 欄位為準。
-  // B:C 可能是合併儲存格（B 顯示 0519-0525、C 空白），也可能是 B=0519 / C=0525。
   function top20MMDDFromCell(v, baseMonth=null){
     if (v == null || v === '') return null;
     if (v instanceof Date && !isNaN(v)){
@@ -1896,7 +1894,9 @@ function parseTop20FromWB(wb, fileName){
     return null;
   }
 
+  // 同晉欣廠邏輯：週檔優先由檔名決定；長家另保留 0609-15 / B:C 月別欄的相容判斷。
   const fileRangeKey = top20RangeKeyFromText(baseName(fileName)) || top20RangeKeyFromText(fileName);
+  const inferredMonthKey = fileRangeKey ? monthKeyFromRangeKey(fileRangeKey, fileName) : inferMonthKeyFromFileName(fileName);
 
   const out = [];
   for (const kind of ['scrap','over']){
@@ -1906,8 +1906,6 @@ function parseTop20FromWB(wb, fileName){
     const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
     if (!rows || !rows.length) continue;
 
-    // 長家 JFM 的「報廢/超用20大－原因別分析」是一張累積表，B欄月別會以 0512-0518 這種格式切分週別。
-    // 因此不能把整張表都視為檔名代表的單週；必須逐列 carry-forward B欄區間。
     const headerRows = Math.min(8, rows.length);
     const maxC = Math.max(...rows.slice(0, headerRows).map(r => (r || []).length), 0);
     const colLabels = new Array(maxC).fill("");
@@ -1920,6 +1918,7 @@ function parseTop20FromWB(wb, fileName){
       colLabels[c] = parts.join("|");
     }
 
+    // 依晉欣廠穩定版：商品欄不得抓到半成品欄；半成品欄必須明確包含「半成品」。
     const findCol = (needList, excludeList=[])=>{
       let best = -1;
       let bestScore = -1;
@@ -1945,17 +1944,30 @@ function parseTop20FromWB(wb, fileName){
       return best;
     };
 
-    // B:C 為長家 JFM 前20大表的週別指定欄，優先以固定欄位讀取；findCol 只作備援。
+    const findNearbyProductCol = (semiCol)=>{
+      if (semiCol == null || semiCol < 0) return -1;
+      // 常見版面為：排序｜商品名｜半成品名｜單價｜金額...
+      const candidates = [semiCol-1, semiCol-2, semiCol+1, semiCol+2];
+      for (const c of candidates){
+        if (c < 0 || c >= colLabels.length) continue;
+        const h = normKey(colLabels[c]);
+        if (!h) continue;
+        if ((h.includes(normKey('商品名')) || h.includes(normKey('商品名稱')) || h.includes(normKey('商品'))) && !h.includes(normKey('半成品'))) return c;
+      }
+      return -1;
+    };
+
     const cMonth    = findCol(['月別']);
-    const cRangeStart = 1; // B欄：週別或起始日
+    const cRangeStart = 1; // B欄：週別或起始日（長家累積表相容）
     const cRangeEnd   = 2; // C欄：結束日（若B:C合併則通常為空白）
     const cSort     = findCol(['排序','排名','序號']);
     const cSemiName = findCol(['半成品名稱','半成品名','半成品'], ['商品']);
     let cProduct    = findCol(['備註商品名稱','備註-商品名稱','備註商品名','商品名稱','商品名','商品'], ['半成品','分析原因','分析原因件','原因說明','後續對策','單價','金額','排序','排名','序號']);
+    if (cProduct < 0) cProduct = findNearbyProductCol(cSemiName);
 
     const cAmt      = (kind==='scrap') ? findCol(['報廢金額']) : findCol(['超用金額']);
     const cUnit     = findCol(['單價']);
-    // 避免誤抓「分析原因（件）」統計欄，優先抓文字型的「分析原因」欄。
+    // 避免誤抓「分析原因（件）」統計欄，優先抓文字型原因欄。
     let cReason     = findCol(['分析原因'], ['分析原因件','總件數']);
     if (cReason < 0) cReason = findCol(['原因別','原因分類']);
     const cDesc     = findCol(['原因說明']);
@@ -1970,7 +1982,6 @@ function parseTop20FromWB(wb, fileName){
       const rangeKey = rowRangeKey || lastRangeKey || fileRangeKey || null;
 
       const sortVal = (cSort>=0) ? asNumber(row[cSort]) : NaN;
-
       const semi = (cSemiName>=0) ? safeStr(row[cSemiName]).trim() : '';
       const productRaw = (cProduct>=0) ? safeStr(row[cProduct]).trim() : '';
       const reason = (cReason>=0) ? safeStr(row[cReason]).trim() : '';
@@ -1982,17 +1993,17 @@ function parseTop20FromWB(wb, fileName){
       const hasRank = Number.isFinite(sortVal) && sortVal >= 1 && sortVal <= 20;
       const hasContent = !!(semi || productRaw || reason || desc || act);
       const hasAmount = Number.isFinite(amt) && Math.abs(amt) > 0;
-      // 部分新版 JFM 前20大表沒有穩定的「排序」欄，原本會整列跳過，導致展開列表空白。
-      // 現改為：有排序照排序；若沒有排序，只要有金額與內容也視為有效列。
+      // 有排序照排序；若沒有排序但有金額與內容，也保留，避免新版/合併欄位造成前20大空白。
       if (!hasRank && !(hasAmount && hasContent)) continue;
       if (!hasContent) continue;
 
       out.push({
         kind,
         rangeKey,
-        monthKey: rangeKey ? monthKeyFromRangeKey(rangeKey, fileName) : inferMonthKeyFromFileName(fileName),
+        monthKey: rangeKey ? monthKeyFromRangeKey(rangeKey, fileName) : inferredMonthKey,
         reason,
         reasonKey: normalizeReasonKey(reason),
+        // 依晉欣廠方式：商品名不再 fallback 成半成品名，避免商品/半成品錯位；顯示時再由日報明細輔助補正。
         product: productRaw || '',
         semi: semi || '',
         unitPrice: Number.isFinite(unitPrice) ? unitPrice : null,
@@ -5898,9 +5909,9 @@ function renderTop20Expand(){
   } else if (monthKey){
     rows = rows.filter(r => (r.monthKey===monthKey) || (r.rangeKey && rangeKeyTouchesMonth(r.rangeKey, monthKey)));
   }
-  // 若來源表本身有週別 rangeKey，週別不吻合時不要退回顯示整張累積表，避免一週顯示多週資料。
-  const hasExplicitRange = rowsBeforePeriodFilter.some(r => !!r.rangeKey);
-  if (!rows.length && act.length && !hasExplicitRange) rows = rowsBeforePeriodFilter;
+  // 同晉欣廠邏輯：若已鎖定目前 JFM 檔案，但週別/月別欄位因格式差異未吻合，
+  // 則退回顯示目前檔案內的前20大資料，避免展開列表空白。
+  if (!rows.length && act.length) rows = rowsBeforePeriodFilter;
 
   const scopeMonthKey = (state.selection && state.selection.year && state.selection.month) ? `${state.selection.year}-${String(state.selection.month).padStart(2,'0')}` : null;
   const dupCount = makeTop20DupCountBefore(kind, st.cutoffStartISO, scopeMonthKey);
