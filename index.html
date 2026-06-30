@@ -395,7 +395,7 @@ function monthKeyFromISO(iso){
       <div class="flex flex-wrap gap-2 items-center justify-start sm:justify-end">
         <div class="flex flex-wrap gap-2 items-center mr-0 sm:mr-2" aria-label="廠別儀表板切換">
           <a href="https://hamster3-3-3.github.io/factory_compare_dashboard/" class="seg-btn no-underline" title="前往總覽儀表板">總覽</a>
-          <a href="https://hamster3-3-3.github.io/Xifang-halfproduct/" class="seg-btn no-underline" title="前往新豐廠半成品儀表板">新豐</a>
+          <a href="https://hamster3-3-3.github.io/XiFang-halfproduct/" class="seg-btn no-underline" title="前往新豐廠半成品儀表板">新豐</a>
           <a href="https://hamster3-3-3.github.io/jinxin-halfproduct/" class="seg-btn no-underline" title="前往晉欣半成品儀表板">晉欣</a>
           <a href="https://hamster3-3-3.github.io/Daxi-halfproduct/" class="seg-btn no-underline" title="前往屏榮大溪半成品儀表板">屏榮大溪</a>
           <a href="https://hamster3-3-3.github.io/ChangJia-halfproduct/" class="seg-btn active no-underline" title="前往長家廠半成品儀表板">長家</a>
@@ -455,7 +455,7 @@ function monthKeyFromISO(iso){
     </div>
 
     <!-- KPI cards -->
-    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
       <div class="card p-4">
         <div class="kpi-card-title">營業額</div>
         <div id="kpiSales" class="kpi-card-value mono mt-1">—</div>
@@ -467,65 +467,37 @@ function monthKeyFromISO(iso){
       <div class="card p-4">
         <div class="kpi-card-title">報廢率</div>
         <div id="kpiScrapRate" class="kpi-card-value mono mt-1">—</div>
-</div>
-      <div class="card p-4">
-        <div class="kpi-card-title">超用額</div>
+</div>      <div class="card p-4">
+        <div id="kpiOverAmtLabel" class="kpi-card-title">超用金額(多展-報廢)</div>
         <div id="kpiOverAmt" class="kpi-card-value mono mt-1">—</div>
+</div>
+      <div id="kpiOverAmtBCard" class="card p-4 hidden">
+        <div id="kpiOverAmtBLabel" class="kpi-card-title">超用金額B(多展-報廢)</div>
+        <div id="kpiOverAmtB" class="kpi-card-value mono mt-1">—</div>
 </div>
       <div class="card p-4">
         <div class="kpi-card-title">超用率</div>
         <div id="kpiOverRate" class="kpi-card-value mono mt-1">—</div>
 </div>
     </div>
-
-    <!-- Top cards -->
-    <div class="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-3">
-      <div class="card p-4">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="kpi-card-title">廢棄前10名</div>
-            <div id="topScrapAmt" class="kpi-card-value mono mt-1">—</div>
-            <div class="subval mt-1">構成比：<span id="topScrapShare" class="mono">—</span></div>
-          </div>
-          
-        </div>
-      </div>
-
-      <div class="card p-4">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="kpi-card-title">超用前10名</div>
-            <div id="topOverAmt" class="kpi-card-value mono mt-1">—</div>
-            <div class="subval mt-1">構成比：<span id="topOverShare" class="mono">—</span></div>
-          </div>
-          
-        </div>
-      </div>
-
-      <div class="card p-4">
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <div class="kpi-card-title">共用類廢棄</div>
-            <div id="sharedAmt" class="kpi-card-value mono mt-1">—</div>
-            <div class="subval mt-1 flex items-center gap-2">
-              構成比（KPI 15%）：<span id="sharedShare" class="mono">—</span>
-              <span id="sharedBadge" class="hidden"></span>
-            </div>
-          </div>
-          
-        </div>
-      </div>
+    <!-- Top cards removed per request: keep hidden placeholders so existing JavaScript can update values without rendering the cards. -->
+    <div class="hidden" aria-hidden="true">
+      <span id="topScrapAmt"></span>
+      <span id="topScrapShare"></span>
+      <span id="topOverAmt"></span>
+      <span id="topOverShare"></span>
+      <span id="sharedAmt"></span>
+      <span id="sharedShare"></span>
+      <span id="sharedBadge"></span>
     </div>
 
     <!-- Charts -->
-    <div class="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-3">
+    <div class="mt-4 grid grid-cols-1 gap-3">
       <div class="card p-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <div class="text-sm font-semibold">KPI 趨勢圖</div>
-            
           </div>
-          
           <div class="flex flex-wrap gap-2 items-center" id="kpiSingleWrap">
             <button class="seg-btn active" type="button" data-kpi-single="sales">營業額</button>
             <button class="seg-btn" type="button" data-kpi-single="scrapAmt">報廢額</button>
@@ -534,34 +506,20 @@ function monthKeyFromISO(iso){
             <button class="seg-btn" type="button" data-kpi-single="overuseRate">超用率</button>
           </div>
         </div>
-        <div class="mt-3">
-          <canvas id="kpiChart" height="220"></canvas>
+        <div class="mt-3 h-[340px]">
+          <canvas id="kpiChart" height="340" style="height:340px;"></canvas>
         </div>
       </div>
+    </div>
 
-      <div class="card p-4">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <div class="text-sm font-semibold">廢棄／超用 趨勢圖</div>
-            
-          </div>
-          <div class="flex flex-wrap gap-2 items-center">
-            <div class="flex flex-wrap gap-2 items-center">
-              <button class="seg-btn active" data-right="scrapTop10">廢棄前10名</button>
-              <button class="seg-btn" data-right="overTop10">超用前10名</button>
-              <button class="seg-btn" data-right="shared">共用類廢棄</button>
-            </div>
-            <div class="h-6 w-px bg-slate-200 mx-1"></div>
-            <div class="flex flex-wrap gap-2 items-center">
-              <button class="seg-btn active" data-right-metric="amt">金額</button>
-              <button class="seg-btn" data-right-metric="share">構成比</button>
-            </div>
-          </div>
-        </div>
-        <div class="mt-3">
-          <canvas id="rightChart" height="220"></canvas>
-        </div>
-      </div>
+    <!-- 廢棄／超用趨勢圖已移除；保留隱藏元件供既有 JavaScript 更新狀態，避免缺少 DOM 節點。 -->
+    <div class="hidden" aria-hidden="true">
+      <button class="seg-btn active" type="button" data-right="scrapTop10">廢棄前10名</button>
+      <button class="seg-btn" type="button" data-right="overTop10">超用前10名</button>
+      <button class="seg-btn" type="button" data-right="shared">共用類廢棄</button>
+      <button class="seg-btn active" type="button" data-right-metric="amt">金額</button>
+      <button class="seg-btn" type="button" data-right-metric="share">構成比</button>
+      <canvas id="rightChart" height="1"></canvas>
     </div>
 
     
@@ -683,6 +641,7 @@ function monthKeyFromISO(iso){
               <option value="scrapAmt">報廢金額（高→低）</option>
               <option value="scrapRate">報廢率（高→低）</option>
               <option value="overuseAmt">超用金額（高→低）</option>
+              <option value="overuseAmtB">超用金額B（高→低）</option>
               <option value="overuseRate">超用率（高→低）</option>
               <option value="refillQty">補單量（高→低）</option>
               <option value="refillRateNew">補單率（高→低）</option>
@@ -725,7 +684,7 @@ function monthKeyFromISO(iso){
                   <th class="text-right">實際生產率</th>
                   <th id="groupDiffHeader" class="text-right">差異金額</th>
                   <th id="groupScrapHeader" class="text-right">報廢金額</th>
-                  <th id="groupOveruseHeader" class="text-right">超用金額</th>
+                  <th id="groupOveruseHeader" class="text-right">超用金額(多展-報廢)</th>
                 </tr>
               </thead>
               <tbody id="groupTbody"></tbody>
@@ -3265,6 +3224,46 @@ function getRecentMonthKeysFromManifest(count=3){
   return sorted.slice(Math.max(0, sorted.length - count));
 }
 
+
+
+function getAllMonthKeysFromManifest(){
+  const keys = new Set();
+  for (const fp of (state.manifestFiles || [])) {
+    for (const mk of getFileMonthCoverage(fp)) {
+      if (/^20\d{2}-(0[1-9]|1[0-2])$/.test(String(mk || ''))) keys.add(mk);
+    }
+  }
+  return Array.from(keys).sort();
+}
+
+function startBackgroundLoadRemainingMonths(){
+  if (state._backgroundMonthLoading) return;
+  const allMonthKeys = getAllMonthKeysFromManifest();
+  const remaining = allMonthKeys.filter(mk => !state.loadedMonthKeys.has(mk));
+  if (!remaining.length) return;
+
+  state._backgroundMonthLoading = true;
+  (async () => {
+    for (const mk of remaining) {
+      if (state.loadedMonthKeys.has(mk)) continue;
+      try {
+        await ensureDataForMonthKeys([mk], {background:true});
+      } catch (e) {
+        console.warn('背景月份載入失敗：' + mk, e);
+      }
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    state._backgroundMonthLoading = false;
+    const el = $('dataStatus');
+    if (el) {
+      const failCount = Array.isArray(state.loadErrors) ? state.loadErrors.length : 0;
+      el.textContent = failCount
+        ? `背景載入完成（已載入 ${state.loadedMonthKeys.size} 個月份，部分檔案失敗 ${failCount}）`
+        : `已完成所有月份背景載入（${state.loadedMonthKeys.size} 個月份）`;
+    }
+  })();
+}
+
 function setDefaultSelectionToLatestLoadedMonth(monthKeys){
   const latest = (monthKeys || []).filter(Boolean).sort().at(-1);
   if (!latest) return;
@@ -3342,7 +3341,8 @@ function dedupeLoadedData(){
   state.top20Entries = state.top20Entries || [];
 }
 
-async function ensureDataForMonthKeys(monthKeys){
+async function ensureDataForMonthKeys(monthKeys, options={}){
+  const silent = !!(options && options.background);
   const need = Array.from(new Set((monthKeys||[]).filter(Boolean))).filter(mk => !state.loadedMonthKeys.has(mk));
   if (!need.length) return;
 
@@ -3352,8 +3352,10 @@ async function ensureDataForMonthKeys(monthKeys){
     return;
   }
 
-  $('dataStatus').innerHTML = `<span class="loader"></span> 載入資料中（${need.join(', ')}）...`;
-  $('dataStatus').classList.add('chip');
+  if (!silent) {
+    $('dataStatus').innerHTML = `<span class="loader"></span> 載入資料中（${need.join(', ')}）...`;
+    $('dataStatus').classList.add('chip');
+  }
 
   const loadErrors = [];
   let sum = [];
@@ -3398,10 +3400,12 @@ async function ensureDataForMonthKeys(monthKeys){
   need.forEach(mk => state.loadedMonthKeys.add(mk));
   state.loadErrors = Array.from(new Set((state.loadErrors || []).concat(loadErrors)));
 
-  if (loadErrors.length) {
-    $('dataStatus').textContent = `資料已載入（部分失敗 ${loadErrors.length}）`;
-  } else {
-    $('dataStatus').textContent = `資料已載入（${state.loadedMonthKeys.size} 個月份）`;
+  if (!silent) {
+    if (loadErrors.length) {
+      $('dataStatus').textContent = `資料已載入（部分失敗 ${loadErrors.length}）`;
+    } else {
+      $('dataStatus').textContent = `資料已載入（${state.loadedMonthKeys.size} 個月份）`;
+    }
   }
 }
 
@@ -3956,12 +3960,18 @@ function augmentSummaryRowsWithDetails(srows, drows){
   return Array.from(merged.values()).sort((a,b) => safeLocaleCompare(a.date, b.date));
 }
 
+function shouldUsePostMayOveruseLayout(rows){
+  return isMay2026OrLaterRange() || !!state._forceMayGroupLayout || (Array.isArray(rows) && rows.some(r => safeStr(r && r.date) >= '2026-05-01'));
+}
+
 function updateKPICards(srows) {
   const sum = (k) => srows.reduce((a,b)=>a + (Number(b[k])||0), 0);
 
   const totalSales = sum('sales');
   const totalScrapAmt = sum('scrapAmt');
   const totalOverAmt = sum('overuseAmt');
+  const totalOverAmtB = totalOverAmt - totalScrapAmt;
+  const usePostMay = shouldUsePostMayOveruseLayout(srows);
 
   // 以區間加總後重新計算「整段期間」的比率（避免直接加總每日百分比）
   const scrapRate = (Number.isFinite(totalSales) && totalSales > 0) ? (totalScrapAmt / totalSales) : NaN;
@@ -3972,6 +3982,13 @@ function updateKPICards(srows) {
   $('kpiScrapRate').textContent = fmtPct(scrapRate);
   $('kpiOverAmt').textContent = fmtMoney(totalOverAmt);
   $('kpiOverRate').textContent = fmtPct(overRate);
+
+  const overAmtLabel = $('kpiOverAmtLabel');
+  const overAmtBCard = $('kpiOverAmtBCard');
+  const overAmtB = $('kpiOverAmtB');
+  if (overAmtLabel) overAmtLabel.textContent = usePostMay ? '超用金額A(多展)' : '超用金額(多展-報廢)';
+  if (overAmtBCard) overAmtBCard.classList.toggle('hidden', !usePostMay);
+  if (overAmtB) overAmtB.textContent = fmtMoney(totalOverAmtB);
 
   // Top cards：金額用「加總」，構成比用「加總後再計算」(以分母加總權重)
   const totalTopScrapAmt = sum('topScrapAmt');
@@ -4389,6 +4406,8 @@ function aggregateGroups(drows) {
     o.actualRate = o.hasNewDetail ? (o.order > 0 ? (o.actualQty / o.order) : (o.actualRateDenom > 0 ? (o.actualRateNumer / o.actualRateDenom) : null)) : null;
     o.refillRateNew = o.hasNewDetail ? (o.order > 0 ? (o.refillQtyNew / o.order) : (o.refillRateDenom > 0 ? (o.refillRateNumer / o.refillRateDenom) : null)) : null;
     o.unitPrice = o.unitPriceN ? (o.unitPriceSum / o.unitPriceN) : null;
+    o.overuseAmtA = Number(o.overuseAmt) || 0;
+    o.overuseAmtB = (Number(o.overuseAmt) || 0) - (Number(o.scrapAmt) || 0);
   }
   return out;
 }
@@ -4427,42 +4446,46 @@ function getMayGroupColumns(sortValue){
       { label:'報廢金額', field:'scrapAmt', type:'money' }
     ];
   }
-  if (sort === 'overuseAmt' || sort === 'overuseRate') {
+  if (sort === 'overuseAmt' || sort === 'overuseAmtB' || sort === 'overuseRate') {
     return [
       { label:'超用數', field:'overuseQty', type:'qty' },
       { label:'超用率', field:'overuseRate', type:'rate' },
-      { label:'超用金額', field:'overuseAmt', type:'money' }
+      { label:'超用金額A(多展)', field:'overuseAmtA', type:'money' },
+      { label:'超用金額B(多展-報廢)', field:'overuseAmtB', type:'money' }
     ];
   }
   if (sort === 'expandRate') {
     return [
       { label:'生管展開量', field:'expandQty', type:'qty' },
       { label:'生管展開率', field:'expandRate', type:'rate' },
-      { label:'超用金額', field:'overuseAmt', type:'money' }
+      { label:'超用金額A(多展)', field:'overuseAmtA', type:'money' },
+      { label:'超用金額B(多展-報廢)', field:'overuseAmtB', type:'money' }
     ];
   }
   if (sort === 'actualRate') {
     return [
       { label:'生產實際產出量', field:'actualQty', type:'qty' },
       { label:'生產實際產出率', field:'actualRate', type:'rate' },
-      { label:'超用金額', field:'overuseAmt', type:'money' }
+      { label:'超用金額A(多展)', field:'overuseAmtA', type:'money' },
+      { label:'超用金額B(多展-報廢)', field:'overuseAmtB', type:'money' }
     ];
   }
-  if (sort === 'refillQty') {
+  if (sort === 'refillQty' || sort === 'refillRate') {
     return [
       { label:'生產補單量', field:'refillQtyNew', type:'qty' },
       { label:'生產補單率', field:'refillRateNew', type:'rate' },
-      { label:'超用金額', field:'overuseAmt', type:'money' }
+      { label:'超用金額A(多展)', field:'overuseAmtA', type:'money' },
+      { label:'超用金額B(多展-報廢)', field:'overuseAmtB', type:'money' }
     ];
   }
   // prodRate = 總產出率
   return [
     { label:'總產出量', field:'output', type:'qty' },
     { label:'總產出率', field:'prodRate', type:'rate' },
-    { label:'超用金額', field:'overuseAmt', type:'money' }
+    { label:'超用金額A(多展)', field:'overuseAmtA', type:'money' },
+    { label:'超用金額B(多展-報廢)', field:'overuseAmtB', type:'money' }
   ];
 }
-
 function fmtMayGroupCell(row, col){
   const v = row[col.field];
   if (col.type === 'rate') return v == null ? '—' : fmtPct(v);
@@ -4492,7 +4515,7 @@ function buildGroupHeaderHTML(){
     <th class="text-right">實際生產率</th>
     <th id="groupDiffHeader" class="text-right">${isRate ? '差異率' : '差異金額'}</th>
     <th id="groupScrapHeader" class="text-right">${isRate ? '報廢率' : '報廢金額'}</th>
-    <th id="groupOveruseHeader" class="text-right">${isRate ? '超用率' : '超用金額'}</th>
+    <th id="groupOveruseHeader" class="text-right">${isRate ? '超用率' : '超用金額(多展-報廢)'}</th>
   `;
 }
 
@@ -4516,6 +4539,16 @@ function syncMayGroupColumnsAndSort(){
       opt.hidden = !isNew;
       opt.style.display = !isNew ? 'none' : '';
     });
+
+
+    const overAOpt = sel.querySelector('option[value="overuseAmt"]');
+    if (overAOpt) overAOpt.textContent = isNew ? '超用金額A（高→低）' : '超用金額(多展-報廢)（高→低）';
+    const overBOpt = sel.querySelector('option[value="overuseAmtB"]');
+    if (overBOpt) {
+      overBOpt.disabled = !isNew;
+      overBOpt.hidden = !isNew;
+      overBOpt.style.display = !isNew ? 'none' : '';
+    }
 
     const prodOpt = sel.querySelector('option[value="prodRate"]');
     if (prodOpt) prodOpt.textContent = isNew ? '總產出率（高→低）' : '實際生產率（高→低）';
@@ -4554,6 +4587,8 @@ function applyGroupFilterAndRender(drows) {
     state._groupRangeKey = rangeKey;
   }
 
+  state._forceMayGroupLayout = isMay2026OrLaterRange() || (Array.isArray(drows) && drows.some(r => safeStr(r.date) >= '2026-05-01'));
+
   syncGroupQtyRateHeaders();
 
   const kwProd = $('productSearch').value.trim().toLowerCase();
@@ -4587,7 +4622,8 @@ function applyGroupFilterAndRender(drows) {
   if (sort === 'actualRate') filtered.sort(byNullable('actualRate'));
   if (sort === 'scrapAmt') filtered.sort(by('scrapAmt'));
   if (sort === 'scrapRate') filtered.sort(byNullable('scrapRate'));
-  if (sort === 'overuseAmt') filtered.sort(by('overuseAmt'));
+  if (sort === 'overuseAmt') filtered.sort(by('overuseAmtA'));
+  if (sort === 'overuseAmtB') filtered.sort(by('overuseAmtB'));
   if (sort === 'overuseRate') filtered.sort(byNullable('overuseRate'));
   if (sort === 'refillQty') filtered.sort(isNewLayout ? by('refillQtyNew') : by('refillQty'));
   if (sort === 'refillRateNew') filtered.sort(byNullable('refillRateNew'));
@@ -6091,6 +6127,7 @@ async function init(force=false) {
     // 上市日期背景補載，不阻塞主畫面
     Promise.resolve(state.launchPromise).then(()=>{ try{ renderAll(); if (state.selectedKey) renderSelectedItem(); }catch(e){} }).catch(()=>{});
     state.loaded = true;
+    startBackgroundLoadRemainingMonths();
   } catch (e) {
     console.error(e);
     const failed = Array.isArray(state.loadErrors) && state.loadErrors.length
