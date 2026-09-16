@@ -1,0 +1,1 @@
+{"name":"changjia-halfproduct","private":true,"version":"1.0.0","scripts":{"convert:data":"node scripts/convert.cjs","check:data":"node scripts/convert.cjs --check"},"dependencies":{"xlsx":"0.18.5"}}

@@ -464,7 +464,7 @@ function monthKeyFromISO(iso){
 </style>
 
   <!-- Local vendor scripts (GitHub Pages 同網域) -->
-  <script src="./xlsx.full.min.js"></script>
+
   <script src="./chart.umd.min.js"></script>
 </head>
 
@@ -1225,6 +1225,7 @@ async function tryLoadLaunchMap(){
       const r = await fetchWithTimeout(url, {cache:'no-store'}, 20000);
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const ab = await r.arrayBuffer();
+      await ensureXlsxReady();
       const wb = XLSX.read(ab, {type:'array', cellDates:true});
       const mp = parseLaunchMapFromWB(wb);
       state.launch.map = mp;
@@ -1346,6 +1347,28 @@ function fetchWithTimeout(url, options={}, timeoutMs=20000){
   const timer = setTimeout(() => controller.abort(new DOMException('timeout','AbortError')), timeoutMs);
   const opts = Object.assign({}, options, { signal: controller.signal });
   return fetch(url, opts).finally(() => clearTimeout(timer));
+}
+
+let jsonIndex = {files:{}};
+let xlsxPromise;
+async function ensureXlsxReady(){
+  if(window.XLSX) return;
+  if(!xlsxPromise) xlsxPromise=ensureLibGlobal('XLSX',['./xlsx.full.min.js','https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js']).catch(e=>{xlsxPromise=null;throw e;});
+  return xlsxPromise;
+}
+async function loadJsonIndex(){
+  try{const r=await fetchWithTimeout('./data/json-manifest.json',{cache:'no-cache'},10000);if(!r.ok)throw Error(r.status);jsonIndex=await r.json();}
+  catch(e){jsonIndex={files:{}};console.warn('JSON 索引尚未提供，使用 Excel',e);}
+}
+async function loadPreparsedJson(f){
+  const entry=jsonIndex.files?.[f];if(!entry)return null;
+  try{
+    const url='./'+encodePath(entry.json)+'?v='+encodeURIComponent(entry.sourceSha256+'-'+jsonIndex.parserHash);
+    const r=await fetchWithTimeout(url,{cache:'force-cache'},20000);if(!r.ok)throw Error(r.status);
+    const j=await r.json();
+    if(j.source!==f||j.sourceSha256!==entry.sourceSha256||['summary','details','halfDetails','reasonWeeks','top20Entries'].some(k=>!Array.isArray(j[k])))throw Error('JSON 格式不符');
+    return j;
+  }catch(e){console.warn('JSON 讀取失敗，使用 Excel',f,e);return null;}
 }
 
 async function loadManifest() {
@@ -3565,6 +3588,12 @@ async function ensureDataForMonthKeys(monthKeys, options={}){
   for (let __loadIdx = 0; __loadIdx < files.length; __loadIdx++) {
     const f = files[__loadIdx];
     try {
+      const cached=await loadPreparsedJson(f);
+      if(cached){
+        sum=sum.concat(cached.summary);det=det.concat(cached.details);halfDet=halfDet.concat(cached.halfDetails);
+        reasons=reasons.concat(cached.reasonWeeks);top20=top20.concat(cached.top20Entries);
+      }else{
+      await ensureXlsxReady();
       const url = './data/' + encodePath(f);
       if (isWasteFile(f)) {
         const r = await fetchWithTimeout(url, {cache:'no-store'}, 20000);
@@ -3581,6 +3610,7 @@ async function ensureDataForMonthKeys(monthKeys, options={}){
         const wb = XLSX.read(ab, {type:'array', cellDates:true});
         reasons = reasons.concat(parseReasonFromWB(wb, f));
         top20 = top20.concat(parseTop20FromWB(wb, f));
+      }
       }
     } catch (e) {
       console.warn(e);
@@ -3633,10 +3663,7 @@ async function loadAllData() {
   $('dataStatus').classList.remove('chip');
   $('dataStatus').classList.add('chip');
 
-  await ensureLibGlobal('XLSX', [
-    './xlsx.full.min.js',
-    'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js'
-  ]);
+  await loadJsonIndex();
   await ensureLibGlobal('Chart', [
     './chart.umd.min.js',
     'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',

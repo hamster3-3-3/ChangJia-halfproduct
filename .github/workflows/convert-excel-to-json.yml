@@ -1,0 +1,37 @@
+name: Convert Excel to dashboard JSON
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - 'data/**'
+      - '!data/**/*.json'
+      - 'index.html'
+      - 'scripts/**'
+      - 'package*.json'
+      - '.github/workflows/convert-excel-to-json.yml'
+permissions:
+  contents: write
+concurrency:
+  group: excel-json-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run convert:data
+      - run: npm run check:data
+      - name: Commit generated files
+        run: |
+          git add data/manifest.json data/json-manifest.json data-json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'data: sync Excel manifest and JSON'
+          git push
