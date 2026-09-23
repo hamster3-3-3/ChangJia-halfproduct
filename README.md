@@ -12,6 +12,8 @@
 
 網站優先讀取 JSON，無 JSON 或讀取失敗時改用 Excel。保留長家原本的日別明細、半成品展開明細及 JFM 原因資料解析規則。
 
+每份半成品 JSON 只保留該 Excel 所在 `data/年份/月份/` 的資料。例如放在 `data/2026/08/` 的 Excel，產生的 `summary`、`details` 與 `halfDetails` 只會包含 `2026-08`；即使活頁簿內殘留其他月份的工作表或公式結果，也不會寫入 JSON。轉檔時亦會自動移除已無對應 Excel 的舊 JSON。
+
 ## 第一次設定
 
 在 Settings → Actions → General → Workflow permissions 選擇 Read and write permissions。Actions 中可手動執行 Convert Excel to dashboard JSON。
